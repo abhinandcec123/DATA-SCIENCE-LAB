@@ -1,0 +1,41 @@
+import pandas as pd
+
+
+df = pd.read_csv("/home/s3mca/Downloads/chipotle.csv")
+
+print(df.head())
+
+
+# a) Display the first 5 rows
+print("First 5 rows:")
+print(df.head())
+
+# b) Sort by item_price in descending order
+# Remove $ and convert item_price to float for sorting
+df["item_price"] = df["item_price"].str.replace("$", "", regex=False).astype(float)
+print("\nTop 5 items by price:")
+print(df.sort_values("item_price", ascending=False).head())
+
+# c) Display records where item_name contains "chicken"
+print("\nRecords containing 'chicken':")
+print(df[df["item_name"].str.contains("chicken", case=False, na=False)])
+
+
+# d) Remove square brackets from choice_description
+df["choice_description"] = df["choice_description"].str.replace(
+    r"[\[\]]", "", regex=True
+)
+print("\nAfter removing square brackets:")
+print(df[["choice_description"]].head())
+print("\nAfter removing square brackets:")
+print(df[["choice_description"]].head())
+
+# e) Display datatype of each column
+print("\nData types:")
+print(df.dtypes)
+
+
+# f) item_price is already converted to float above
+print("\nFinal item_price column:")
+print(df["item_price"].head())
+print("\nitem_price datatype:", df["item_price"].dtype)
