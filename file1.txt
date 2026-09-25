@@ -1,0 +1,42 @@
+#loading sklearn libraries
+import matplotlib.pyplot as plt
+import numpy as np
+from sklearn import datasets,linear_model
+from sklearn.metrics import mean_squared_error,r2_score
+
+#Loading data
+diabetesX,diabetesY=datasets.load_diabetes(return_X_y=True)
+#spliting datasets
+diabetesX=diabetesX[:,np.newaxis,2]
+
+#split the data into training/testing sets
+diabetesXtrain=diabetesX[:-20]
+diabetesYtest=diabetesX[-20:]
+
+diabetesYtrain=diabetesY[:-20]
+diabetesYtest=diabetesY[-20:]
+
+#Creating the model
+#create linear regression object
+regr=linear_model.LinearRegression()
+
+#training the model using the datasets
+regr.fit(diabetesXtrain,diabetesYtrain)
+
+#making predictions
+diabetesYpred=regr.predict(diabetesXtest)
+
+#coefficients
+print("coefficients:\n",regr.coef_)
+
+#mean squared error
+print("Mean squared error:\n",mean_squared_error(diabetesYtest,diabetesYpred))
+
+#print("Coefficient of determination:",r2_score(diabetesYtest,diabetesYpred))
+plt.scatter(diabetesXtest,diabetesYtest,color='black')
+plt.plot(diabetesXtest,diabetesYpred,color='blue',linewidth=3)
+plt.xticks()
+plt.yticks()
+plt.show()
+
+
