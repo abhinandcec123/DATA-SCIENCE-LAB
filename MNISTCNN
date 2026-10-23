@@ -1,0 +1,31 @@
+import tensorflow as tf
+from tensorflow.keras import datasets
+import matplotlib.pyplot as plt
+
+# Load the MNIST dataset
+(train_images, train_labels), (test_images, test_labels) = datasets.mnist.load_data()
+
+# Normalize pixel values
+train_images = train_images / 255.0
+test_images = test_images / 255.0
+
+# Class names
+class_names = [str(i) for i in range(10)]
+
+# Display sample images
+plt.figure(figsize=(10, 5))
+
+for i in range(10):
+    plt.subplot(2, 5, i + 1)
+    plt.imshow(train_images[i], cmap='gray')
+    plt.title(f"Label: {train_labels[i]}")
+    plt.axis('off')
+
+plt.tight_layout()
+plt.show()
+
+# Print dataset shapes
+print("Training images:", train_images.shape)
+print("Training labels:", train_labels.shape)
+print("Testing images:", test_images.shape)
+print("Testing labels:", test_labels.shape)
