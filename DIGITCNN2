@@ -1,0 +1,77 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+from sklearn.datasets import load_digits
+from sklearn.model_selection import train_test_split
+
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import (
+    Input, Conv2D, Flatten, Dense
+)
+
+# Load the dataset
+digits = load_digits()
+
+X = digits.images
+y = digits.target
+
+print("Images:", X.shape)
+print("Labels:", y.shape)
+
+# Normalize pixel values
+X = X.astype("float32") / 16.0
+
+# Add channel dimension
+X = X[..., np.newaxis]
+
+# Split the dataset
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y,
+    test_size=0.2,
+    random_state=42,
+    stratify=y
+)
+
+# Create the CNN model
+model = Sequential([
+    Input(shape=(8, 8, 1)),
+    Conv2D(8, (3, 3), activation="relu"),
+    Flatten(),
+    Dense(32, activation="relu"),
+    Dense(10, activation="softmax")
+])
+
+# Compile the model
+model.compile(
+    optimizer="adam",
+    loss="sparse_categorical_crossentropy",
+    metrics=["accuracy"]
+)
+
+# Train the model
+model.fit(
+    X_train, y_train,
+    epochs=10,
+    batch_size=16,
+    validation_split=0.1
+)
+
+# Evaluate the model
+loss, accuracy = model.evaluate(X_test, y_test)
+
+print("Test loss:", loss)
+print("Test accuracy:", accuracy)
+
+# Display sample predictions
+predictions = model.predict(X_test[:5], verbose=0)
+predicted_labels = np.argmax(predictions, axis=1)
+
+for i in range(5):
+    plt.figure()
+    plt.imshow(X_test[i].squeeze(), cmap="gray")
+    plt.title(
+        f"Actual: {y_test[i]}, "
+        f"Predicted: {predicted_labels[i]}"
+    )
+    plt.axis("off")
+    plt.show()
