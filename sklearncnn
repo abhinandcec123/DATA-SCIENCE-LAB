@@ -1,0 +1,29 @@
+import matplotlib.pyplot as plt
+from sklearn.datasets import load_digits
+
+# Load the built-in digits dataset
+digits = load_digits()
+
+# Images and labels
+train_images = digits.images
+train_labels = digits.target
+
+# Normalize pixel values
+train_images = train_images / 16.0
+
+# Display sample images
+plt.figure(figsize=(10, 5))
+
+for i in range(10):
+    plt.subplot(2, 5, i + 1)
+    plt.imshow(train_images[i], cmap='gray')
+    plt.title(f"Label: {train_labels[i]}")
+    plt.axis('off')
+
+plt.tight_layout()
+plt.show()
+
+# Print dataset information
+print("Images shape:", train_images.shape)
+print("Labels shape:", train_labels.shape)
+print("Total images:", len(train_images))
