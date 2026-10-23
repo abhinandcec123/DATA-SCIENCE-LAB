@@ -1,0 +1,92 @@
+import nltk
+from nltk.tokenize import word_tokenize
+from nltk.util import ngrams
+from nltk import RegexpParser
+from collections import Counter
+
+# Download required resources
+nltk.download('punkt')
+nltk.download('punkt_tab')
+nltk.download('averaged_perceptron_tagger_eng')
+
+# Sample text
+text = "The young student reads books. The student reads newspapers."
+
+print("Sample Text:")
+print(text)
+
+
+# 1. POS TAGGING
+print("\n1. POS TAGGING")
+
+words = word_tokenize(text)
+pos_tags = nltk.pos_tag(words)
+
+for word, tag in pos_tags:
+    print(word, ":", tag)
+
+
+# 2. N-GRAM (BIGRAM)
+print("\n2. N-GRAM (BIGRAM)")
+
+tokens = [
+    word.lower()
+    for word in words
+    if word.isalpha()
+]
+
+bigram_list = list(ngrams(tokens, 2))
+
+print("Bigrams:")
+print(bigram_list)
+
+# Count the bigrams
+bigram_count = Counter(bigram_list)
+
+print("\nBigram Counts:")
+for pair, count in bigram_count.items():
+    print(pair, ":", count)
+
+
+# 3. LAPLACE SMOOTHING
+print("\n3. LAPLACE SMOOTHING")
+
+# Count occurrences of each first word
+word_count = Counter(tokens[:-1])
+
+# Find the number of unique words
+vocabulary_size = len(set(tokens))
+
+# Function to calculate smoothed probability
+def bigram_probability(first_word, second_word):
+    count = bigram_count[(first_word, second_word)]
+    total = word_count[first_word]
+
+    probability = (count + 1) / (total + vocabulary_size)
+    return probability
+
+
+print("Probability of 'student reads':",
+      bigram_probability("student", "reads"))
+
+print("Probability of 'books reads':",
+      bigram_probability("books", "reads"))
+
+
+# 4. CHUNKING
+print("\n4. CHUNKING")
+
+# Define grammar for noun phrases
+grammar = "NP: {<DT>?<JJ.*>*<NN.*>}"
+
+# Create the chunk parser
+chunk_parser = RegexpParser(grammar)
+
+# Perform chunking
+chunk_tree = chunk_parser.parse(pos_tags)
+
+print("\nChunking Output:")
+print(chunk_tree)
+
+print("\nChunk Tree:")
+chunk_tree.pretty_print()
